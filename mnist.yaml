@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      initContainers:
+      - name: model-training
+        image: cbruz/training:v4
+        volumeMounts:
+        - name: shared-storage
+          mountPath: /model
+      containers:
+      - name: web-app
+        image: cbruz/web-app:v5
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: shared-storage
+          mountPath: /model
+      volumes:
+      - name: shared-storage
+        persistentVolumeClaim:
+          claimName: shared-storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: my-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: LoadBalancer
