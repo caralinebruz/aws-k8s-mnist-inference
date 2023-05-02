@@ -1,14 +1,15 @@
 # aws-k8s-mnist-inference
 
-## Setup
+## Authentication
 Ensure your ~/.aws configuration is set up with aws_key and aws_id params
 
 ## Requirements
 
-- ekstl
+- eksctl
 - aws cli
 - kubectl cli
 
+# Cluster Setup
 
 ## Create cluster using the eks cli tool:
 
